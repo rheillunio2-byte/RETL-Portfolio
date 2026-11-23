@@ -1,0 +1,215 @@
+/* =====================================================================
+   RETL · CINEMATIC INTRO (namespaced .boot-* — the About section already owns .intro-*)
+   Robot eye wakes up → glitch welcome → "Are you ready?" → dive in.
+   ===================================================================== */
+.boot{
+  position:fixed;inset:0;z-index:200;background:#030207;color:#f4f0fa;overflow:hidden;
+  display:grid;place-items:center;font-family:var(--mono,'DM Mono',monospace);
+  user-select:none;-webkit-user-select:none;
+  transition:opacity .9s ease,visibility .9s;
+}
+.boot.is-gone{opacity:0;visibility:hidden;pointer-events:none}
+.boot *{box-sizing:border-box}
+
+/* ---------- ambient layers ---------- */
+.boot-bg{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 50% 38%,rgba(117,65,199,.22),transparent 70%),
+    radial-gradient(120% 90% at 50% 120%,rgba(168,117,255,.10),transparent 60%);
+  opacity:0;transition:opacity 1.6s ease}
+.boot.is-awake .boot-bg{opacity:1}
+.boot-grid{position:absolute;inset:-20%;pointer-events:none;opacity:0;overflow:hidden;
+  -webkit-mask-image:radial-gradient(closest-side,#000 10%,transparent 85%);mask-image:radial-gradient(closest-side,#000 10%,transparent 85%);
+  transform:perspective(700px) rotateX(58deg) translateY(-8%);transform-origin:50% 100%;
+  transition:opacity 2s ease}
+.boot-grid:before{content:"";position:absolute;left:0;right:0;top:-56px;bottom:0;will-change:transform;
+  background-image:linear-gradient(rgba(199,170,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(199,170,255,.07) 1px,transparent 1px);
+  background-size:56px 56px;animation:introGrid 3s linear infinite}
+.boot.is-awake .boot-grid{opacity:1}
+@keyframes introGrid{to{transform:translateY(56px)}}
+
+.boot-scan{position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);opacity:.55}
+.boot-vignette{position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.78) 100%)}
+.boot-roll{position:absolute;left:0;right:0;height:22vh;top:-30vh;z-index:6;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(197,162,255,.05),transparent);animation:introRoll 5.5s linear infinite}
+@keyframes introRoll{to{top:130vh}}
+
+/* ---------- HUD corners / status ---------- */
+.boot-hud{position:absolute;inset:0;pointer-events:none;z-index:7;opacity:0;transition:opacity 1s ease}
+.boot.is-awake .boot-hud{opacity:1}
+.boot-hud .c{position:absolute;width:26px;height:26px;border:1px solid rgba(197,162,255,.55)}
+.boot .c.tl{top:22px;left:22px;border-right:0;border-bottom:0}.boot .c.tr{top:22px;right:22px;border-left:0;border-bottom:0}
+.boot .c.bl{bottom:22px;left:22px;border-right:0;border-top:0}.boot .c.br{bottom:22px;right:22px;border-left:0;border-top:0}
+.boot-status{position:absolute;left:58px;bottom:26px;font-size:10px;letter-spacing:.16em;color:#9a8ab5;line-height:1.9;text-transform:uppercase}
+.boot-status b{color:#d8c1ff;font-weight:500}
+.boot-status .ok{color:#8affc1}
+.boot-bar{display:block;width:150px;height:2px;margin-top:6px;background:rgba(199,170,255,.15);overflow:hidden}
+.boot-bar i{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#6d3cae,#d8c1ff);box-shadow:0 0 10px #a875ff;transition:transform .25s linear}
+.boot-id{position:absolute;right:58px;top:26px;font-size:10px;letter-spacing:.2em;color:#9a8ab5;text-align:right;line-height:1.9;text-transform:uppercase}
+.boot-id b{color:#d8c1ff;font-weight:500}
+.boot-rec{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff4d6d;margin-right:7px;box-shadow:0 0 10px #ff4d6d;animation:blink 1s steps(2) infinite}
+.boot-skip{position:absolute;right:58px;bottom:24px;z-index:9;background:none;border:1px solid rgba(197,162,255,.25);color:#b9a8d6;
+  font:inherit;font-size:10px;letter-spacing:.2em;padding:9px 14px;cursor:pointer;opacity:0;transition:opacity .6s .6s,color .2s,border-color .2s,background .2s}
+.boot.is-awake .boot-skip{opacity:1}
+.boot-skip:hover,.boot-skip:focus-visible{color:#fff;border-color:#c5a2ff;background:rgba(168,117,255,.12);outline:none}
+
+/* ---------- stage ---------- */
+.boot-stage{position:relative;z-index:5;width:min(94vw,860px);display:flex;flex-direction:column;align-items:center;gap:clamp(14px,3.2vh,34px);
+  transform-origin:50% 28%;transition:transform 1.25s cubic-bezier(.75,0,.2,1),opacity .8s ease,filter .8s}
+
+/* ---------- the eye ---------- */
+.boot-eye{position:relative;width:min(78vw,470px);aspect-ratio:400/260;flex:none;transform-origin:50% 50%;
+  transition:transform 1.2s cubic-bezier(.75,0,.15,1)}
+.boot-eye svg{display:block;width:100%;height:100%;overflow:visible}
+.boot-eye .hud-ring{position:absolute;left:50%;top:50%;width:150%;aspect-ratio:1;translate:-50% -50%;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.boot.is-awake .hud-ring{opacity:1}
+.boot .hud-ring svg{width:100%;height:100%}
+.boot .hud-ring .r1{transform-origin:50% 50%;animation:bootSpin 38s linear infinite}
+.boot .hud-ring .r2{transform-origin:50% 50%;animation:bootSpin 24s linear infinite reverse}
+.boot .hud-ring .r3{transform-origin:50% 50%;animation:bootSpin 70s linear infinite}
+@keyframes bootSpin{to{transform:rotate(360deg)}}
+.boot-eye .iris-spin{transform-box:view-box;transform-origin:0 0;animation:bootSpin 16s linear infinite}
+.boot-eye .iris-spin-r{transform-box:view-box;transform-origin:0 0;animation:bootSpin 11s linear infinite reverse}
+.boot-eye .eye-glow{filter:drop-shadow(0 0 12px rgba(168,117,255,.9)) drop-shadow(0 0 34px rgba(117,65,199,.65))}
+.boot-eye:before{content:"";position:absolute;inset:-18% -10%;pointer-events:none;border-radius:50%;opacity:0;
+  background:radial-gradient(closest-side,rgba(139,86,224,.42),rgba(117,65,199,.16) 55%,transparent 75%)}
+.boot.is-awake .boot-eye:before{animation:eyeHalo 3.2s ease-in-out infinite}
+@keyframes eyeHalo{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+.boot-eye .eye-readout{font-family:var(--mono,'DM Mono',monospace);font-size:7.5px;letter-spacing:.14em;fill:#a98fd6;opacity:.85}
+
+/* glitch applied to the whole eye while it flickers / on bursts */
+.boot-eye.glitch,.boot-title.burst,.boot.burst .boot-copy{animation:introJit .16s steps(2) 1}
+.boot-eye.glitch svg{filter:drop-shadow(5px 0 0 rgba(255,60,140,.7)) drop-shadow(-5px 0 0 rgba(60,200,255,.7))}
+@keyframes introJit{
+  0%{transform:translate(0,0) skewX(0)}
+  25%{transform:translate(-9px,2px) skewX(-6deg)}
+  50%{transform:translate(8px,-3px) skewX(5deg)}
+  75%{transform:translate(-4px,1px) skewX(-2deg)}
+  100%{transform:translate(0,0) skewX(0)}}
+
+/* ---------- copy ---------- */
+.boot-copy{position:relative;width:100%;min-height:clamp(150px,26vh,210px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding:0 6px}
+.boot-tag{margin:0;min-height:1.2em;font-size:11px;letter-spacing:.34em;color:#b994ed;text-transform:uppercase}
+.boot-tag:before{content:"";display:inline-block;width:26px;height:1px;background:#b994ed;vertical-align:middle;margin-right:12px;opacity:.7}
+.boot-tag:after{content:"";display:inline-block;width:26px;height:1px;background:#b994ed;vertical-align:middle;margin-left:12px;opacity:.7}
+
+.boot-title{position:relative;margin:0;min-height:1.05em;font-family:var(--font,'Manrope',sans-serif);font-weight:800;line-height:1;letter-spacing:-.055em;
+  font-size:clamp(44px,11vw,104px);color:#f4f0fa;white-space:nowrap;
+  text-shadow:0 0 28px rgba(168,117,255,.55)}
+.boot-title.md{font-size:clamp(26px,5.6vw,56px);letter-spacing:-.045em;white-space:normal;line-height:1.05;max-width:16em}
+.boot-title.lg{font-size:clamp(30px,7.4vw,76px);letter-spacing:-.05em;white-space:normal;line-height:1.02}
+.boot-title.grad{background:linear-gradient(100deg,#fff 10%,#c5a2ff 55%,#8d5ad7);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 26px rgba(168,117,255,.5))}
+/* RGB-split ghost layers (data-text mirrors the live text) */
+.boot-title:before,.boot-title:after{content:attr(data-text);position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;white-space:inherit;max-width:inherit;margin:inherit;
+  -webkit-text-fill-color:currentColor;background:none}
+.boot-title:before{color:#ff3c8c;mix-blend-mode:screen}
+.boot-title:after{color:#3cc8ff;mix-blend-mode:screen}
+.boot-title.grad:before,.boot-title.grad:after{-webkit-text-fill-color:initial}
+.boot-title.glitching:before{opacity:.85;animation:sliceA .55s steps(1) infinite}
+.boot-title.glitching:after{opacity:.85;animation:sliceB .55s steps(1) infinite}
+@keyframes sliceA{
+  0%{clip-path:inset(0 0 80% 0);transform:translate(-7px,0)}
+  14%{clip-path:inset(34% 0 44% 0);transform:translate(6px,0)}
+  28%{clip-path:inset(66% 0 8% 0);transform:translate(-4px,0)}
+  42%{clip-path:inset(12% 0 70% 0);transform:translate(8px,0)}
+  57%{clip-path:inset(52% 0 24% 0);transform:translate(-9px,0)}
+  71%{clip-path:inset(0 0 0 0);transform:translate(0,0);opacity:0}
+  100%{clip-path:inset(80% 0 0 0);transform:translate(5px,0)}}
+@keyframes sliceB{
+  0%{clip-path:inset(72% 0 6% 0);transform:translate(7px,0)}
+  16%{clip-path:inset(8% 0 76% 0);transform:translate(-6px,0)}
+  33%{clip-path:inset(46% 0 30% 0);transform:translate(5px,0)}
+  50%{clip-path:inset(20% 0 58% 0);transform:translate(-8px,0)}
+  66%{clip-path:inset(0 0 0 0);transform:translate(0,0);opacity:0}
+  83%{clip-path:inset(60% 0 14% 0);transform:translate(9px,0)}
+  100%{clip-path:inset(30% 0 50% 0);transform:translate(-5px,0)}}
+.boot-title.out{animation:titleOut .26s steps(3) forwards}
+@keyframes titleOut{
+  0%{opacity:1;transform:none;filter:none}
+  35%{opacity:1;transform:translate(10px,0) skewX(8deg);filter:hue-rotate(60deg) blur(1px)}
+  70%{opacity:.5;transform:translate(-12px,0) scaleY(.2);filter:blur(2px)}
+  100%{opacity:0;transform:scaleY(0);filter:blur(4px)}}
+
+.boot-sub{margin:0;min-height:1.6em;max-width:36em;font-family:var(--font,'Manrope',sans-serif);font-size:clamp(13px,1.9vw,16px);line-height:1.6;color:#a79bb8}
+.boot-sub em{font-style:normal;color:#d8c1ff}
+.boot-caret{display:inline-block;width:7px;height:1em;margin-left:3px;vertical-align:-2px;background:#c5a2ff;animation:blink 1s steps(2) infinite}
+
+/* ---------- CTA ---------- */
+.boot-cta{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.boot-cta.show{opacity:1;transform:none;pointer-events:auto}
+.boot-enter{position:relative;overflow:hidden;cursor:pointer;font:inherit;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#fff;
+  padding:17px 34px;border:1px solid #c5a2ff;background:linear-gradient(180deg,rgba(168,117,255,.28),rgba(117,65,199,.18));
+  box-shadow:0 0 0 0 rgba(168,117,255,.55),inset 0 0 22px rgba(168,117,255,.18);animation:ctaPulse 2.2s ease-out infinite;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  transition:background .25s,transform .25s,letter-spacing .35s}
+.boot-enter:before{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);animation:ctaSheen 3s ease-in-out infinite}
+.boot-enter:hover,.boot-enter:focus-visible{background:linear-gradient(180deg,rgba(197,162,255,.5),rgba(139,86,224,.36));letter-spacing:.3em;outline:none}
+.boot-enter:active{transform:scale(.97)}
+.boot-enter[disabled]{cursor:progress;opacity:.55;animation:none}
+.boot-enter span{display:inline-block;margin-left:8px;transition:transform .3s}
+.boot-enter:hover span{transform:translate(3px,-3px)}
+.boot-hint{font-size:10px;letter-spacing:.24em;color:#7d7194;text-transform:uppercase}
+.boot-hint kbd{font:inherit;border:1px solid rgba(197,162,255,.3);padding:2px 6px;margin:0 3px;color:#b9a8d6}
+@keyframes ctaPulse{70%{box-shadow:0 0 0 18px rgba(168,117,255,0),inset 0 0 22px rgba(168,117,255,.18)}100%{box-shadow:0 0 0 0 rgba(168,117,255,0)}}
+@keyframes ctaSheen{0%,55%{left:-60%}100%{left:130%}}
+
+/* ---------- boot flash / CRT power-on ---------- */
+.boot-flash{position:absolute;inset:0;z-index:12;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 38%,#fff 0%,#e4d2ff 22%,#a875ff 55%,#2b1050 100%)}
+.boot-flash.go{animation:introFlash .9s ease-out forwards}
+@keyframes introFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+.boot-tear{position:absolute;inset:0;z-index:11;pointer-events:none;opacity:0}
+.boot.exiting .boot-tear{opacity:1;animation:introTear .7s steps(1) forwards;
+  background:repeating-linear-gradient(0deg,rgba(255,60,140,.14) 0 3px,rgba(60,200,255,.12) 3px 7px,transparent 7px 16px)}
+@keyframes introTear{0%{transform:translateX(-30px)}20%{transform:translateX(40px);opacity:.9}40%{transform:translateX(-18px)}60%{transform:translateX(26px);opacity:.6}80%{transform:translateX(-8px)}100%{transform:none;opacity:0}}
+
+/* ---------- cold-boot terminal ---------- */
+.boot-term{position:absolute;left:50%;top:50%;z-index:5;width:min(86vw,430px);transform:translate(-50%,-50%);
+  font-size:12px;line-height:2;letter-spacing:.08em;color:#a79bb8;opacity:0;transition:opacity .5s ease;pointer-events:none}
+.boot.is-booting .boot-term{opacity:1}
+.boot-term div{display:flex;gap:10px;align-items:baseline;white-space:nowrap}
+.boot-term div:before{content:">";color:#8d5ad7}
+.boot-term div span{flex:none}
+.boot-term div i{flex:1;border-bottom:1px dotted rgba(167,155,184,.35);transform:translateY(-4px);min-width:12px}
+.boot-term div b{font-weight:500;color:#d8c1ff}
+.boot-term div b.ok{color:#8affc1}
+.boot-term div:first-child span{color:#e9d8ff}
+.boot-term div:last-child:after{content:"";width:7px;height:1em;background:#c5a2ff;align-self:center;animation:blink 1s steps(2) infinite}
+.boot.is-booting .boot-stage{opacity:0}
+
+/* ---------- logo formation canvas ---------- */
+.boot-logo{position:absolute;inset:0;z-index:10;pointer-events:none;opacity:0}
+.boot-logo.on{opacity:1}
+.boot.exiting .boot-stage{opacity:0;transition:transform 1.25s cubic-bezier(.75,0,.2,1),opacity .5s .7s ease}
+
+
+/* crosshair (React Bits) — fades out as we dive into the eye */
+.boot-xhair{transition:opacity .35s ease}
+.boot.exiting .boot-xhair{opacity:0!important}
+
+/* exit: dive into the pupil */
+.boot.exiting .boot-copy,.boot.exiting .boot-hud,.boot.exiting .boot-skip{opacity:0;transition:opacity .35s ease}
+.boot.exiting .boot-stage{transform:scale(1)}
+.boot.exiting .boot-eye{transform:scale(14)}
+.boot.exiting .boot-grid,.boot.exiting .boot-bg{opacity:0;transition:opacity .8s ease}
+
+@media(max-width:650px){
+  .boot-status{left:40px;bottom:22px;font-size:9px}
+  .boot-id{display:none}
+  .boot-skip{right:40px;bottom:20px}
+  .boot-bar{width:110px}
+  .boot .c.tl,.boot .c.tr{top:14px}.boot .c.bl,.boot .c.br{bottom:14px}
+  .boot .c.tl,.boot .c.bl{left:14px}.boot .c.tr,.boot .c.br{right:14px}
+  .boot-title{letter-spacing:-.045em}
+  .boot-tag{letter-spacing:.24em;font-size:10px}
+  .boot-tag:before,.boot-tag:after{width:14px;margin-left:8px;margin-right:8px}
+  .boot-enter{padding:16px 26px;font-size:11px}
+}
+@media(max-height:620px){
+  .boot-eye{width:min(48vw,330px)}
+  .boot-copy{min-height:130px}
+  .boot-title{font-size:clamp(34px,9vh,70px)}
+}
+@media(prefers-reduced-motion:reduce){.boot{display:none}}

@@ -1,0 +1,67 @@
+/* =====================================================================
+   RETL · v2.6 extras — command palette, hero spotlight, toast, debug rain
+   ===================================================================== */
+
+/* ---------- topbar trigger ---------- */
+.cmdk-btn{display:inline-flex;align-items:center;gap:10px;background:rgba(168,117,255,.06);border:1px solid var(--line);color:#b9aecb;
+  font:10px var(--mono);letter-spacing:.1em;padding:8px 11px;border-radius:8px;cursor:pointer;transition:color .2s,border-color .2s,background .2s,transform .2s}
+.cmdk-btn:hover,.cmdk-btn:focus-visible{color:#fff;border-color:rgba(197,162,255,.55);background:rgba(168,117,255,.14);outline:none;transform:translateY(-1px)}
+.cmdk-btn kbd,.cmdk__bar kbd,.cmdk__foot kbd{font:inherit;font-size:9px;letter-spacing:.06em;padding:2px 6px;border-radius:5px;border:1px solid rgba(197,162,255,.28);color:#c9b6e8;background:rgba(8,7,12,.6)}
+@media(max-width:650px){.cmdk-btn kbd{display:none}.cmdk-btn{padding:8px 10px}}
+
+/* ---------- command palette ---------- */
+.cmdk{position:fixed;inset:0;z-index:130;display:grid;justify-items:center;align-items:start;padding:14vh 18px 18px;background:rgba(6,4,10,.72);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .22s ease}
+.cmdk[hidden]{display:none}
+.cmdk.is-open{opacity:1}
+.cmdk__panel{width:min(640px,100%);max-height:min(560px,72vh);display:flex;flex-direction:column;overflow:hidden;border-radius:16px;
+  background:linear-gradient(180deg,#151020,#0e0b16);border:1px solid rgba(197,162,255,.22);
+  box-shadow:0 40px 110px #000c,0 0 0 1px rgba(168,117,255,.08),0 0 80px rgba(132,75,207,.18);
+  transform:translateY(14px) scale(.975);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.cmdk.is-open .cmdk__panel{transform:none}
+.cmdk__bar{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.cmdk__bar>span{color:var(--purple);font:600 16px var(--mono)}
+.cmdk__bar input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--text);font:500 15px var(--font);letter-spacing:-.01em}
+.cmdk__bar input::placeholder{color:#6f6580}
+.cmdk__list{list-style:none;margin:0;padding:8px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3b2a57 transparent}
+.cmdk__group{padding:12px 12px 6px;font:9px var(--mono);letter-spacing:.2em;color:#7d6f93}
+.cmdk__item{display:flex;align-items:center;gap:13px;padding:10px 12px;border-radius:10px;cursor:pointer;color:#cfc6dc;position:relative}
+.cmdk__item i{font-style:normal;width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:7px;border:1px solid var(--line);color:#b99cf0;font:12px var(--mono);background:rgba(168,117,255,.07)}
+.cmdk__item b{font-weight:600;font-size:13.5px;letter-spacing:-.01em;color:inherit}
+.cmdk__item small{margin-left:auto;font:10px var(--mono);letter-spacing:.08em;color:#7d6f93;white-space:nowrap}
+.cmdk__item[aria-selected="true"]{background:rgba(168,117,255,.15);color:#fff}
+.cmdk__item[aria-selected="true"]:before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:var(--purple);box-shadow:0 0 12px var(--purple)}
+.cmdk__item[aria-selected="true"] i{border-color:rgba(197,162,255,.5);color:#fff}
+.cmdk__empty{padding:34px 16px;text-align:center;font:11px var(--mono);letter-spacing:.12em;color:#7d6f93}
+.cmdk__foot{display:flex;gap:16px;justify-content:center;padding:11px 14px;border-top:1px solid var(--line);font:9px var(--mono);letter-spacing:.12em;color:#7d6f93}
+@media(max-width:650px){.cmdk{padding-top:9vh}.cmdk__foot{display:none}}
+
+/* ---------- hero spotlight grid ---------- */
+.hero-spot{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity .5s ease;
+  background-image:linear-gradient(rgba(197,162,255,.34) 1px,transparent 1px),linear-gradient(90deg,rgba(197,162,255,.34) 1px,transparent 1px);
+  -webkit-mask-image:radial-gradient(260px circle at var(--sx,50%) var(--sy,50%),#000,transparent 70%);
+  mask-image:radial-gradient(260px circle at var(--sx,50%) var(--sy,50%),#000,transparent 70%)}
+.hero.is-spot .hero-spot{opacity:1}
+
+/* ---------- hero extras ---------- */
+.hero-meta{flex-wrap:wrap}
+.meta-live{display:inline-flex;align-items:center;gap:8px}
+.meta-live:before{content:"";width:6px;height:6px;border-radius:50%;background:#8affc1;box-shadow:0 0 10px #8affc1;animation:metaPulse 2s ease-in-out infinite}
+@keyframes metaPulse{50%{opacity:.35;transform:scale(.7)}}
+
+/* ---------- marquee reacts to scroll ---------- */
+.marquee{will-change:transform;transform-origin:50% 50%}
+
+/* ---------- toast ---------- */
+.retl-toast{position:fixed;left:50%;top:96px;z-index:140;translate:-50% -14px;opacity:0;pointer-events:none;padding:11px 18px;border-radius:999px;
+  background:rgba(16,13,23,.92);border:1px solid rgba(197,162,255,.35);box-shadow:0 14px 50px #000a,0 0 30px rgba(132,75,207,.25);
+  color:#e6dcf5;font:10px var(--mono);letter-spacing:.16em;white-space:nowrap;transition:opacity .3s,translate .35s cubic-bezier(.2,.8,.2,1)}
+.retl-toast.show{opacity:1;translate:-50% 0}
+
+/* ---------- debug rain ---------- */
+.debug-rain{position:fixed;inset:0;z-index:150;pointer-events:none;width:100%;height:100%;transition:opacity .9s ease}
+
+@media(prefers-reduced-motion:reduce){
+  .cmdk,.cmdk__panel,.hero-spot,.retl-toast{transition:none}
+  .meta-live:before{animation:none}
+}

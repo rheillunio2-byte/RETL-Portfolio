@@ -1,0 +1,21 @@
+{
+  "name": "retl-portfolio",
+  "private": true,
+  "version": "2.8.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@hugeicons/core-free-icons": "latest",
+    "ogl": "^1.0.11",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.7.0"
+  },
+  "devDependencies": {
+    "vite": "^6.1.0"
+  }
+}
